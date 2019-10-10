@@ -58,10 +58,8 @@ You can complete the tasks in any order.
     - Hint: Use session FlashBag.
 * TASK 5: As a user I can see my list of todos paginated.
 * TASK 6: Choose a task below:
- <br>BACKEND (focus) Implement an ORM database access layer so we don’t have SQL in the controller code.
- <br><i>OR</i><br>
- FRONTEND (focus) Using JQuery, VueJs, or React render the todo list dynamically and allow the delete + completed buttons to work dynamically via an Ajax<br>
- (You do not need to make pagination to work). We care about the user experience here, this might be animation?  
+    - BACKEND (focus): Implement an ORM database access layer so we don’t have SQL in the controller code, or
+    - FRONTEND (focus): Use JQuery, VueJs, or React to render the todo list dynamically and allow the delete + completed buttons to work dynamically via Ajax. You do not need pagination to work within your new front end.  We care about the user experience here -- this might be animation?  
  
     
 
