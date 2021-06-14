@@ -69,8 +69,8 @@ Extra tasks:
 - Adding a few unit tests to show us that you undersatnd how they work is a bonus. 
 
 ### Documentation
-This app use [Silex](http://silex.sensiolabs.org/), a  micro-framework based on the Symfony2 Components.
-Documentation can be found here: http://silex.sensiolabs.org/documentation
+This app use Silex, a  micro-framework based on the Symfony2 Components.
+Documentation can be found here: https://silex.symfony.com/doc/1.3/
 
 
 ### How to submit your work?
