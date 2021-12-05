@@ -66,7 +66,7 @@ You can complete the tasks in any order.
 Extra tasks:
 - Fix any bugs you may find.
 - Fix any security issues you may find.
-- Adding a few unit tests to show us that you undersatnd how they work is a bonus. 
+- Adding a few unit tests to show us that you understand how they work is a bonus. 
 
 ### Documentation
 This app use Silex, a  micro-framework based on the Symfony2 Components.
