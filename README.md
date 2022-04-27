@@ -68,11 +68,6 @@ Extra tasks:
 - Fix any security issues you may find.
 - Adding a few unit tests to show us that you understand how they work is a bonus. 
 
-### Documentation
-This app use Silex, a  micro-framework based on the Symfony2 Components.
-Documentation can be found here: https://silex.symfony.com/doc/1.3/
-
-
 ### How to submit your work?
 
 1. ##### First you need to fork this repository.
