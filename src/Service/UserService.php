@@ -2,7 +2,9 @@
 
 namespace Service;
 
+
 use Entity\User;
+use Exception\ValidationException;
 
 /**
  * User Service Class
@@ -23,6 +25,7 @@ class UserService extends EntityService
 	 * @param $username
 	 * @param $password
 	 * @return bool
+	 * @throws ValidationException
 	 */
 	public function login($username, $password)
 	{
@@ -38,8 +41,15 @@ class UserService extends EntityService
 					->setCurrentUser($user);
 				return true;
 			}
+			throw new ValidationException(
+				"Please enter valid username and password.",
+				"login",
+				'/login');
 		}
-		return false;
+		throw new ValidationException(
+			"Please enter both username and password.",
+			"login",
+			'/login');
 	}
 
 	/**

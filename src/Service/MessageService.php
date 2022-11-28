@@ -64,10 +64,10 @@ class MessageService
 				$this->add('error', $e->getMessage(), 'Something went wrong');
 		}
 
-		if ($this->getCurrentRequest()->getPathInfo() == $redirectPath) {
+		if ($this->getCurrentRequest()->getPathInfo() == $redirectPath
+			&& $redirectPath != '/login') {
 			return;
 		}
-
 		return $this->app
 			->redirect($redirectPath);
 	}
