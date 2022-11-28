@@ -24,7 +24,9 @@
                 </td>
                 <td>
                     <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
-                        <button type="submit" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-remove glyphicon-white"></span></button>
+                        <button type="submit" class="btn btn-xs btn-danger">
+                            <span class="glyphicon glyphicon-remove glyphicon-white"></span>
+                        </button>
                     </form>
                 </td>
             </tr>
@@ -32,7 +34,14 @@
         <tr>
             <form method="post" action="{{ app.request.baseurl }}/todo/add">
                 <td colspan="3">
-                    <input type="textbox" name="description" class="small-6 small-center" placeholder="Description...">
+                    <input type="textbox" name="description" class="small-6 small-center {{ messages.hasMessage('add.todo') ? 'has-error' : '' }}" placeholder="Description...">
+                    {%- if messages.hasMessage('add.todo') %}
+                        {%- for error in messages.get('add.todo') %}
+                            <p class="text-danger" >
+                                {{ error.message }}
+                            </p>
+                        {%- endfor %}
+                    {%- endif %}
                 </td>
                 <td>
                     <button type="submit" class="btn btn-sm btn-primary">Add</button>

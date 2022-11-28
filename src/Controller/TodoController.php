@@ -36,7 +36,8 @@ class TodoController extends BaseController
 		parent::__construct($app);
 		$this->todoService = new TodoService(
 			$this->getEntityManager(),
-			$this->getAuthService()
+			$this->getAuthService(),
+			$this->getValidator()
 		);
 		$this->messageService = $messageService;
 	}
@@ -56,8 +57,8 @@ class TodoController extends BaseController
 			$todo = $this->todoService->getTodoForCurrentUser($id);
 			if ($todo) {
 				return $this->getTwig()->render('todo.html', [
-						'todo' => $todo
-					]);
+					'todo' => $todo
+				]);
 			}
 			throw new NotFoundHttpException("Requested todo was not found.");
 		}
@@ -71,7 +72,7 @@ class TodoController extends BaseController
 	 *
 	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 * @throws \Exception
+	 * @throws \Exception\ValidationException
 	 */
 	public function add(Request $request)
 	{

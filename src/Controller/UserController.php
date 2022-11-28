@@ -31,7 +31,8 @@ class UserController extends BaseController
 		parent::__construct($app);
 		$this->userService = new UserService(
 			$this->getEntityManager(),
-			$this->getAuthService()
+			$this->getAuthService(),
+			$this->getValidator()
 		);
 		$this->messageService = $messageService;
 	}

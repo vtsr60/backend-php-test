@@ -4,6 +4,8 @@ namespace Service;
 
 
 use Entity\Todo;
+use Exception\ValidationException;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Todo Service Class
@@ -30,6 +32,7 @@ class TodoService extends EntityService
 			'user_id' => $this->getAuthService()
 				->getCurrentUserId()
 		]);
+
 	}
 
 	/**
@@ -52,10 +55,14 @@ class TodoService extends EntityService
 	 *
 	 * @param $description
 	 * @return \Doctrine\ORM\Mapping\Entity|null
-	 * @throws \Exception
+	 * @throws ValidationException
 	 */
 	public function addTodo($description)
 	{
+		$error = $this->validate($description, new Assert\NotBlank());
+		if ($error) {
+			throw new ValidationException($error, 'add.todo');
+		}
 		try {
 			$newTodo = new Todo();
 			$newTodo->setuser_id($this->getAuthService()->getCurrentUserId())

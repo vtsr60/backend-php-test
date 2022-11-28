@@ -5,6 +5,7 @@ namespace Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Base Entity Service Class
@@ -24,6 +25,11 @@ class EntityService
 	private $authService;
 
 	/**
+	 * @var ValidatorInterface
+	 */
+	private $validator;
+
+	/**
 	 * Entity class name should be set by the child classes.
 	 *
 	 * @var string
@@ -33,11 +39,13 @@ class EntityService
 	/**
 	 * @param $entityManager
 	 * @param $authService
+	 * @param $validator
 	 */
-	public function __construct($entityManager, $authService)
+	public function __construct($entityManager, $authService, $validator)
 	{
 		$this->entityManager = $entityManager;
 		$this->authService = $authService;
+		$this->validator = $validator;
 	}
 
 	/**
@@ -124,4 +132,21 @@ class EntityService
 		$this->entityManager->flush();
 	}
 
+	/**
+	 * Validate the entity based on constraint given.
+	 *
+	 * @param $value
+	 * @param $constraint
+	 * @return string|null
+	 */
+	protected function validate($value, $constraint)
+	{
+		$errors = $this->validator
+			->validate($value, $constraint);
+		if ($errors && $errors->count()) {
+			return $errors->get(0)
+				->getMessage();
+		}
+		return null;
+	}
 }

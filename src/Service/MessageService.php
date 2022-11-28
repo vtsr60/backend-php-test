@@ -2,6 +2,7 @@
 
 namespace Service;
 
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
@@ -45,6 +46,14 @@ class MessageService
 	{
 		$redirectPath = '/todo';
 		switch (get_class($e)) {
+			case Exception\ValidationException::class:
+				$this->add(
+					$e->getType(),
+					$e->getMessage());
+				if ($e->getRedirectPath()) {
+					$redirectPath = $e->getRedirectPath();
+				}
+				break;
 			case NotFoundHttpException::class:
 				$this->add(
 					'error',

@@ -67,6 +67,16 @@ class BaseController
 	}
 
 	/**
+	 * Get the Validator instance/
+	 *
+	 * @return mixed
+	 */
+	public function getValidator()
+	{
+		return $this->app['validator'];
+	}
+
+	/**
 	 * Redirect to specified path.
 	 *
 	 * @param $path
