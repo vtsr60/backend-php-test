@@ -27,6 +27,7 @@
                 <span>Completed on <br />{{ completed_on }}.</span>
                 {%- else %}
                 <form method="post" action="{{ app.request.baseurl }}/todo/completed/{{ id }}">
+                    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                     <button type="submit" class="btn btn-xs btn-success">
                         <span class="glyphicon glyphicon-ok glyphicon-white"></span> Mark Completed
                     </button>
@@ -35,6 +36,7 @@
             </td>
             <td>
                 <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ id }}">
+                    <input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
                     <button type="submit" class="btn btn-xs btn-danger" title="Delete">
                         <span class="glyphicon glyphicon-trash glyphicon-white"></span>
                     </button>

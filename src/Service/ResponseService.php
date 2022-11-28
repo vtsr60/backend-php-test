@@ -19,9 +19,35 @@ class ResponseService
 	 */
 	private $twig;
 
+	/**
+	 * @var string
+	 */
+	private $crsfToken;
+
 	public function __construct($twig)
 	{
 		$this->twig = $twig;
+	}
+
+	/**
+	 * Set CSRF token.
+	 *
+	 * @param $token
+	 * @return void
+	 */
+	public function setCSRFToken($token)
+	{
+		$this->crsfToken = $token;
+	}
+
+	/**
+	 * Get CSRF token.
+	 *
+	 * @return string
+	 */
+	public function getCSRFToken()
+	{
+		return $this->crsfToken;
 	}
 
 	/**
@@ -43,6 +69,7 @@ class ResponseService
 		if (is_object($data)) {
 			$data = json_decode(json_encode($data), true);
 		}
+		$data["CSRFToken"] = $this->getCSRFToken();
 
 		return $this->twig->render($template, $data);
 	}

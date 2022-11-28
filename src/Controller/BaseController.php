@@ -4,6 +4,7 @@ namespace Controller;
 
 use Doctrine\ORM\EntityManager;
 use Service\AuthService;
+use Service\CSRFTokenService;
 use Service\ResponseService;
 use Silex\Application;
 use Twig\Environment;
@@ -25,12 +26,19 @@ class BaseController
 	private $responseService;
 
 	/**
+	 * @var CSRFTokenService
+	 */
+	private $crsfTokenService;
+
+
+	/**
 	 * @param Application $app
 	 */
-	public function __construct($app, $responseService)
+	public function __construct($app, $responseService, $crsfTokenService)
 	{
 		$this->app = $app;
 		$this->responseService = $responseService;
+		$this->crsfTokenService = $crsfTokenService;
 	}
 
 	/**
@@ -42,6 +50,33 @@ class BaseController
 	public function sendOutput(...$params)
 	{
 		return $this->responseService->output(...$params);
+	}
+
+	/**
+	 * Regenerate CSRF Token
+	 *
+	 * @return void
+	 */
+	public function regenerateCSRFToken()
+	{
+		$this->responseService->setCSRFToken(
+			$this->crsfTokenService->regenerateToken()
+		);
+	}
+
+	/**
+	 * Validate the CSRF Token.
+	 *
+	 * @param $request
+	 * @return bool
+	 */
+	public function validateCSRFToken($request)
+	{
+		if ($token = $request->get('CSRFToken')) {
+			return $this->crsfTokenService
+				->validateToken($token);
+		}
+		return false;
 	}
 
 	/**

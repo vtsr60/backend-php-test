@@ -36,7 +36,7 @@ class AuthService
 	 */
 	public function validatePassword($user, $password)
 	{
-		return $password === $user->getpassword();
+		return password_verify($password, $user->getpassword());
 	}
 
 	/**

@@ -4,8 +4,10 @@ namespace Unit\Service;
 
 
 use PHPUnit\Framework\TestCase;
+use Service\CSRFokenService;
 use Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Twig\Environment;
 
 class ResponseServiceTest extends TestCase
@@ -28,7 +30,10 @@ class ResponseServiceTest extends TestCase
 			->disableOriginalConstructor()
 			->setMethods(['render'])
 			->getMock();
-		$this->service = new ResponseService($this->mockTwig);
+		$this->service = $this->getMockBuilder(ResponseService::class)
+			->setConstructorArgs([$this->mockTwig])
+			->setMethods(['getCSRFToken'])
+			->getMock();
 	}
 
 	protected function tearDown()
@@ -40,11 +45,15 @@ class ResponseServiceTest extends TestCase
 
 	public function testOutputHTMLWhenNoFormatArguments()
 	{
-		$data = [];
+		$crsfToken = 'randomToken';
+		$data = ['CSRFToken' => $crsfToken];
 		$this->mockTwig->expects($this->once())
 			->method('render')
 			->with('template', $data)
 			->willReturn('renderResponse');
+		$this->service->expects($this->once())
+			->method('getCSRFToken')
+			->willReturn($crsfToken);
 
 		$this->assertEquals(
 			'renderResponse',
@@ -53,11 +62,15 @@ class ResponseServiceTest extends TestCase
 
 	public function testOutputHTMLWhenHTMLFormatArguments()
 	{
-		$data = [];
+		$crsfToken = 'randomToken';
+		$data = ['CSRFToken' => $crsfToken];
 		$this->mockTwig->expects($this->once())
 			->method('render')
 			->with('template', $data)
 			->willReturn('renderResponse');
+		$this->service->expects($this->once())
+			->method('getCSRFToken')
+			->willReturn($crsfToken);
 
 		$this->assertEquals(
 			'renderResponse',

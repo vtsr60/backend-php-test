@@ -1,7 +1,7 @@
 INSERT INTO users (username, password) VALUES
-('user1', 'user1'),
-('user2', 'user2'),
-('user3', 'user3');
+('user1', '$2y$10$AEWihqMnxhmjMd1RL91UH.ua./1APPTehGK8cZW3Sp47mYQnOtzz2'),
+('user2', '$2y$10$iOcW6f.emucjbcWYElbzy.rCQECbCdL08.s6Y5M3sBytOWgCSsEK.'),
+('user3', '$2y$10$w7Fm7bOoNRu8efd8cobFWOavGFu74WXeUBrhXjScRrrK73A1impgC');
 
 INSERT INTO todos (user_id, description) VALUES
 (1, 'Vivamus tempus'),

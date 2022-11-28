@@ -4,6 +4,7 @@ use Controller\UserController;
 use Controller\HomeController;
 use Controller\TodoController;
 use Service\AuthService;
+use Service\CSRFTokenService;
 use Service\MessageService;
 use Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +26,10 @@ $app['auth.service'] = function () use ($app) {
 	return new AuthService($app['session']);
 };
 
+$app['crsf.service'] = function () use ($app) {
+	return new CSRFTokenService($app['session']);
+};
+
 $app['response.service'] = function () use ($app) {
 	return new ResponseService($app['twig']);
 };
@@ -33,15 +38,15 @@ $app['response.service'] = function () use ($app) {
  * Setup controllers.
  */
 $app['home.controller'] = function () use ($app) {
-	return new HomeController($app, $app['response.service']);
+	return new HomeController($app, $app['response.service'], $app['crsf.service']);
 };
 
 $app['todos.controller'] = function () use ($app) {
-	return new TodoController($app, $app['response.service'], $app['message.service']);
+	return new TodoController($app, $app['response.service'], $app['crsf.service'], $app['message.service']);
 };
 
 $app['user.controller'] = function () use ($app) {
-	return new UserController($app, $app['response.service'], $app['message.service']);
+	return new UserController($app, $app['response.service'], $app['crsf.service'], $app['message.service']);
 };
 
 /**

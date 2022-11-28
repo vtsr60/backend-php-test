@@ -136,3 +136,11 @@ More documentation on Github:
 #### TASK 5: As a user I can see my list of todos paginated.
 1. Add Pagination to the EntityService 
 2. Add Pagination options to the todo list controller
+
+#### Extra task: Added hash password and CSRF protection to form
+1. Add CSRFTokenService to generate token and validate it
+2. Add CSRF validation to todo add, delete and mark complete forms
+3. Add console commands - ```php bin\Console.php [command]```
+   1. hash.user.password - Hash the current password of the existing users
+   2. create.user - Create user with hash password
+3. Update the required unit tests

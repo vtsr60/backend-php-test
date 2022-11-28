@@ -26,9 +26,9 @@ class UserController extends BaseController
 	/**
 	 * @param Application $app
 	 */
-	public function __construct($app, $responseService, $messageService)
+	public function __construct($app, $responseService, $crsfTokenService, $messageService)
 	{
-		parent::__construct($app, $responseService);
+		parent::__construct($app, $responseService, $crsfTokenService);
 		$this->userService = new UserService(
 			$this->getEntityManager(),
 			$this->getAuthService(),
@@ -68,7 +68,7 @@ class UserController extends BaseController
 	public function logout()
 	{
 		$this->userService->logout();
-		return $this->redirect('/');
 
+		return $this->redirect('/');
 	}
 }

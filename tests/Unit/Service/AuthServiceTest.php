@@ -60,7 +60,7 @@ class AuthServiceTest extends TestCase
 			->getMock();
 		$mockUser->expects($this->once())
 			->method('getpassword')
-			->willReturn('wrongpassword');
+			->willReturn(password_hash('wrongpassword', PASSWORD_DEFAULT));
 
 		$this->assertFalse($this->service->validatePassword($mockUser, 'differentpassword'));
 	}
@@ -74,7 +74,7 @@ class AuthServiceTest extends TestCase
 			->getMock();
 		$mockUser->expects($this->once())
 			->method('getpassword')
-			->willReturn($password);
+			->willReturn(password_hash($password, PASSWORD_DEFAULT));
 
 		$this->assertTrue($this->service->validatePassword($mockUser, $password));
 	}

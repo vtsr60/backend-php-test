@@ -20,7 +20,6 @@ class TodoController extends BaseController
 	 */
 	private $todoService;
 
-
 	/**
 	 * @var MessageService
 	 */
@@ -31,11 +30,12 @@ class TodoController extends BaseController
 	 *
 	 * @param $app
 	 * @param $responseService
+	 * @param $crsfTokenService
 	 * @param $messageService
 	 */
-	public function __construct($app, $responseService, $messageService)
+	public function __construct($app, $responseService, $crsfTokenService, $messageService)
 	{
-		parent::__construct($app, $responseService);
+		parent::__construct($app, $responseService, $crsfTokenService);
 		$this->todoService = new TodoService(
 			$this->getEntityManager(),
 			$this->getAuthService(),
@@ -54,6 +54,8 @@ class TodoController extends BaseController
 	 */
 	public function index($id = null, $format = ResponseService::OUTPUT_HTML, Request $request)
 	{
+		$this->regenerateCSRFToken();
+
 		if ($id) {
 			$todo = $this->todoService
 				->getTodoForCurrentUser($id);
@@ -64,7 +66,9 @@ class TodoController extends BaseController
 		}
 		return $this->sendOutput([
 			'todos' => $this->todoService
-				->getTodosForCurrentUser($request->get('page', 1))
+				->getTodosForCurrentUser(
+					$request->get('page', 1)
+				)
 		], 'todos.html', $format);
 	}
 
@@ -77,6 +81,10 @@ class TodoController extends BaseController
 	 */
 	public function add(Request $request)
 	{
+		if (!$this->validateCSRFToken($request)) {
+			throw new \Exception("Form session has expired, Please try again.");
+		}
+
 		$addedTodo = $this->todoService
 			->addTodo($request->get('description'));
 		if ($addedTodo) {
@@ -92,11 +100,16 @@ class TodoController extends BaseController
 	 * Handle todo.del route.
 	 *
 	 * @param $id
+	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 * @throws \Exception
 	 */
-	public function delete($id)
+	public function delete($id, Request $request)
 	{
+		if (!$this->validateCSRFToken($request)) {
+			throw new \Exception("Form session has expired, Please try again.");
+		}
+
 		$deletedTodo = $this->todoService
 			->delete($id);
 		if ($deletedTodo) {
@@ -118,6 +131,10 @@ class TodoController extends BaseController
 	 */
 	public function completed($id, Request $request)
 	{
+		if (!$this->validateCSRFToken($request)) {
+			throw new \Exception("Form session has expired, Please try again.");
+		}
+
 		$todo = $this->todoService
 			->completed($id);
 		if ($todo) {
