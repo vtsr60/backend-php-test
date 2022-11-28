@@ -22,13 +22,17 @@ class TodoService extends EntityService
 	/**
 	 * Get list of todos for current logged in user.
 	 *
+	 * @param $page
 	 * @return array
 	 */
-	public function getTodosForCurrentUser()
+	public function getTodosForCurrentUser($page = 1)
 	{
-		return $this->findBy([
+		return $this->findByPaginated([
 			'user_id' => $this->getAuthService()
 				->getCurrentUserId()
+		], $page, [
+			'completed' => 'ASC',
+			'id' => 'ASC'
 		]);
 
 	}

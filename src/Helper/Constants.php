@@ -9,4 +9,5 @@ namespace Helper;
 class Constants
 {
 	const DATE_FORMAT = "d M Y g:ia";
+	const PAGINATION_LIMIT = 10;
 }

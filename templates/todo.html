@@ -3,6 +3,13 @@
 {% block content %}
 <div class="col-md-4 col-md-offset-4">
     <h1>Todo:</h1>
+    {%- if messages.hasMessage('todo.msg') %}
+        {%- for item in messages.get('todo.msg') %}
+            <div class="alert alert-success" >
+                {{ item.message }}
+            </div>
+        {%- endfor %}
+    {%- endif %}
     <table class="table table-striped">
         <tr>
             <th>#</th>
@@ -28,8 +35,8 @@
             </td>
             <td>
                 <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ id }}">
-                    <button type="submit" class="btn btn-xs btn-danger">
-                        <span class="glyphicon glyphicon-remove glyphicon-white"></span>
+                    <button type="submit" class="btn btn-xs btn-danger" title="Delete">
+                        <span class="glyphicon glyphicon-trash glyphicon-white"></span>
                     </button>
                 </form>
             </td>

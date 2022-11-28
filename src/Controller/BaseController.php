@@ -103,7 +103,7 @@ class BaseController
 	protected function redirect($path = '/')
 	{
 		return $this->getApp()
-			->redirect('/todo');
+			->redirect($path);
 	}
 
 }

@@ -5,6 +5,9 @@ namespace Service;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Expr\OrderBy;
+use Helper\Constants;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -103,6 +106,82 @@ class EntityService
 	{
 		return $this->getRepository()
 			->find($id);
+	}
+
+	/**
+	 * Paginated list of the entity.
+	 *
+	 * @param $criteria
+	 * @param $page
+	 * @param $sorts
+	 * @param $limit
+	 * @return array
+	 * @throws Query\QueryException
+	 */
+	protected function findByPaginated($criteria = [], $page = 1, $sorts = [], $limit = Constants::PAGINATION_LIMIT)
+	{
+		$orderBy = new OrderBy('a.id', 'ASC');
+		if ($sorts && count($sorts)) {
+			$orderBy = new OrderBy();
+			foreach ($sorts as $col => $order) {
+				$orderBy->add("a.{$col}", $order);
+			}
+		}
+
+		$query = $this->getRepository()
+			->createQueryBuilder('a')
+			->orderBy($orderBy);
+
+		foreach ($criteria as $col => $value) {
+			$query->where("a.$col = :$col")
+				->setParameter($col, $value);
+		}
+
+		$offset = 0;
+		if ($page > 0) {
+			$offset = ($page - 1) * $limit;
+		}
+
+		$query->setMaxResults($limit)
+			->setFirstResult($offset);
+
+		$result = $query->getQuery()
+			->getResult(Query::HYDRATE_SIMPLEOBJECT);
+		$total = $this->findByPaginatedCount($criteria);
+		$pageCount = ceil($total / $limit);
+		$pages = range(1, $pageCount);
+		return [
+			'total' => $total,
+			'pages' => $pages,
+			'current' => $page,
+			'items' => $result,
+			'prev' => $page - 1 >= 1 ? $page - 1 : false,
+			'next' => $page + 1 <= $pageCount ? $page + 1 : false,
+			'paginated' => $total > $limit
+		];
+	}
+
+	/**
+	 * Count of the paginated entity list.
+	 *
+	 * @param $criteria
+	 * @return float|int|mixed|string
+	 * @throws Query\QueryException
+	 */
+	protected function findByPaginatedCount($criteria = [])
+	{
+		$query = $this->getRepository()
+			->createQueryBuilder('a');
+
+		foreach ($criteria as $col => $value) {
+			$query->where("a.$col = :$col")
+				->setParameter($col, $value);
+		}
+
+		$query->select('count(a.id)');
+
+		return $query->getQuery()
+			->getSingleScalarResult();;
 	}
 
 	/**

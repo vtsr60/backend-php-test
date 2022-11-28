@@ -117,6 +117,10 @@ More documentation on Github:
 2. Add Exception/Error handling to application(404)
 3. Add confirmation messages to the when add/delete a todo
 
+#### TASK 1: As a user I can't add a todo without a description.
+1. Add ValidationException to trigger on validation failure
+2. Add validation on add todo functionality to not allow empty description
+
 #### Extra task: Added validation to user login form
 1. Add validation for the login form
 
@@ -125,6 +129,10 @@ More documentation on Github:
 2. Add Unit test to the ResponseService
 
 #### TASK 2: As a user I can mark a todo as completed.
-1. Add completed and completed_on to the todo entity.
-2. Add ```task2_migration.sql``` migration file for this task.
-2. Add function to mark todo as completed
+1. Add completed and completed_on to the todo entity
+2. Add ```task2_migration.sql``` migration file for this task
+3. Add function to mark todo as completed
+
+#### TASK 5: As a user I can see my list of todos paginated.
+1. Add Pagination to the EntityService 
+2. Add Pagination options to the todo list controller

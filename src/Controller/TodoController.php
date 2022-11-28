@@ -63,7 +63,8 @@ class TodoController extends BaseController
 			throw new NotFoundHttpException("Requested todo was not found.");
 		}
 		return $this->sendOutput([
-			'todos' => $this->todoService->getTodosForCurrentUser()
+			'todos' => $this->todoService
+				->getTodosForCurrentUser($request->get('page', 1))
 		], 'todos.html', $format);
 	}
 
@@ -107,6 +108,14 @@ class TodoController extends BaseController
 		throw new \Exception("Failed to remove todo.");
 	}
 
+	/**
+	 * Handle todo.completed route.
+	 *
+	 * @param $id
+	 * @param Request $request
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 * @throws \Exception
+	 */
 	public function completed($id, Request $request)
 	{
 		$todo = $this->todoService

@@ -19,13 +19,14 @@
             <th>Status</th>
             <th></th>
         </tr>
-        {% for todo in todos %}
+        {%- if todos.items %}
+            {%- for todo in todos.items %}
             <tr>
                 <td>{{ todo.id }}</td>
                 <td>{{ todo.user_id }}</td>
                 <td>
                     <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
-                       {{ todo.description }}
+                        {{ todo.description }}
                     </a>
                 </td>
                 <td>
@@ -41,29 +42,67 @@
                 </td>
                 <td>
                     <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">
-                        <button type="submit" class="btn btn-xs btn-danger">
-                            <span class="glyphicon glyphicon-remove glyphicon-white"></span>
+                        <button type="submit" class="btn btn-xs btn-danger" title="Delete">
+                            <span class="glyphicon glyphicon-trash glyphicon-white"></span>
                         </button>
                     </form>
                 </td>
             </tr>
-        {% endfor %}
+            {%- endfor %}
+        {%- else %}
+            <tr>
+                <td colspan="5">No Todos present.</td>
+            </tr>
+        {%- endif %}
+        {%- if todos.paginated %}
+            <tr>
+                <td colspan="5" class="text-center">
+                    <ul class="pagination todos-pagination">
+                        {%- if todos.prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ app.request.baseurl }}/todo?page={{ todos.prev }}">Previous</a>
+                            </li>
+                        {%- endif %}
+                        {%- for page in todos.pages %}
+                            <li class="page-item {{ page == todos.current ? 'active' : '' }}">
+                                {%- if page == todos.current %}
+                                    <span class="page-link">{{ page }}</span>
+                                {%- else %}
+                                <a class="page-link" href="{{ app.request.baseurl }}/todo?page={{ page }}">{{ page }}</a>
+                                {%- endif %}
+                            </li>
+                        {%- endfor %}
+                        {%- if todos.next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ app.request.baseurl }}/todo?page={{ todos.next }}">Next</a>
+                            </li>
+                        {%- endif %}
+                    </ul>
+                </td>
+            </tr>
+        {%- endif %}
         <tr>
-            <form method="post" action="{{ app.request.baseurl }}/todo/add">
-                <td colspan="3">
-                    <input type="textbox" name="description" class="small-6 small-center {{ messages.hasMessage('add.todo') ? 'has-error' : '' }}" placeholder="Description...">
-                    {%- if messages.hasMessage('add.todo') %}
-                        {%- for error in messages.get('add.todo') %}
+            <td colspan="5">
+                <form method="post" action="{{ app.request.baseurl }}/todo/add" class="form-horizontal">
+                    <div class="form-group {{ messages.hasMessage('add.todo') ? 'has-error' : '' }}">
+                        <div class="col-sm-10">
+                            <input type="textbox" name="description" class="form-control" placeholder="Description...">
+                            {%- if messages.hasMessage('add.todo') %}
+                            {%- for error in messages.get('add.todo') %}
                             <p class="text-danger" >
                                 {{ error.message }}
                             </p>
-                        {%- endfor %}
-                    {%- endif %}
-                </td>
-                <td>
-                    <button type="submit" class="btn btn-sm btn-primary">Add</button>
-                </td>
-            </form>
+                            {%- endfor %}
+                            {%- endif %}
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <span class="glyphicon glyphicon-plus glyphicon-white"></span> Add
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </td>
         </tr>
     </table>
 </div>
