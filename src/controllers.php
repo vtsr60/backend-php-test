@@ -1,89 +1,65 @@
 <?php
 
+use Controller\UserController;
+use Controller\HomeController;
+use Controller\TodoController;
+use Service\AuthService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-    $twig->addGlobal('user', $app['session']->get('user'));
-
-    return $twig;
+/**
+ * Setup required services and components.
+ */
+$app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
+	$twig->addGlobal('user', $app['auth.service']->getCurrentUser());
+	return $twig;
 }));
 
+$app['auth.service'] = function () use ($app) {
+	return new AuthService($app['session']);
+};
 
-$app->get('/', function () use ($app) {
-    return $app['twig']->render('index.html', [
-        'readme' => file_get_contents('README.md'),
-    ]);
+/**
+ * Setup controllers.
+ */
+$app['home.controller'] = function () use ($app) {
+	return new HomeController($app);
+};
+
+$app['todos.controller'] = function () use ($app) {
+	return new TodoController($app);
+};
+
+$app['user.controller'] = function () use ($app) {
+	return new UserController($app);
+};
+
+/**
+ * Add authentication middleware.
+ */
+$app->before(function (Request $request) use ($app) {
+	if ($app['auth.service']->routeValidation($request)) {
+		// Allowed access
+		return;
+	}
+	return $app->redirect('/login');
 });
 
+/**
+ * Setup routes
+ */
+$app->get('/', 'home.controller:index')
+	->bind('home');
 
-$app->match('/login', function (Request $request) use ($app) {
-    $username = $request->get('username');
-    $password = $request->get('password');
+$app->match('/login', 'user.controller:login')
+	->bind('login');
+$app->get('/logout', 'user.controller:logout')
+	->bind('logout');
 
-    if ($username) {
-        $sql = "SELECT * FROM users WHERE username = '$username' and password = '$password'";
-        $user = $app['db']->fetchAssoc($sql);
-
-        if ($user){
-            $app['session']->set('user', $user);
-            return $app->redirect('/todo');
-        }
-    }
-
-    return $app['twig']->render('login.html', array());
-});
-
-
-$app->get('/logout', function () use ($app) {
-    $app['session']->set('user', null);
-    return $app->redirect('/');
-});
-
-
-$app->get('/todo/{id}', function ($id) use ($app) {
-    if (null === $user = $app['session']->get('user')) {
-        return $app->redirect('/login');
-    }
-
-    if ($id){
-        $sql = "SELECT * FROM todos WHERE id = '$id'";
-        $todo = $app['db']->fetchAssoc($sql);
-
-        return $app['twig']->render('todo.html', [
-            'todo' => $todo,
-        ]);
-    } else {
-        $sql = "SELECT * FROM todos WHERE user_id = '${user['id']}'";
-        $todos = $app['db']->fetchAll($sql);
-
-        return $app['twig']->render('todos.html', [
-            'todos' => $todos,
-        ]);
-    }
-})
-->value('id', null);
-
-
-$app->post('/todo/add', function (Request $request) use ($app) {
-    if (null === $user = $app['session']->get('user')) {
-        return $app->redirect('/login');
-    }
-
-    $user_id = $user['id'];
-    $description = $request->get('description');
-
-    $sql = "INSERT INTO todos (user_id, description) VALUES ('$user_id', '$description')";
-    $app['db']->executeUpdate($sql);
-
-    return $app->redirect('/todo');
-});
-
-
-$app->match('/todo/delete/{id}', function ($id) use ($app) {
-
-    $sql = "DELETE FROM todos WHERE id = '$id'";
-    $app['db']->executeUpdate($sql);
-
-    return $app->redirect('/todo');
-});
+$app->get('/todo/{id}', 'todos.controller:index')
+	->value('id', null)
+	->assert('id', '\d+')
+	->bind('todo');
+$app->post('/todo/add', 'todos.controller:add')
+	->bind('todo.add');
+$app->post('/todo/delete/{id}', 'todos.controller:delete')
+	->bind('todo.delete');

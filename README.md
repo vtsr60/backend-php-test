@@ -93,3 +93,16 @@ More documentation on Github:
 * https://help.github.com/articles/fork-a-repo/
 * https://help.github.com/articles/using-pull-requests/
 
+### Raj Changes
+
+#### Added Composer Package
+* [doctrine/common](https://github.com/doctrine/common/tree/v2.10.0)
+* [dflydev/doctrine-orm-service-provider](https://github.com/dflydev/dflydev-doctrine-orm-service-provider)
+* [symfony/orm-pack](https://github.com/symfony/orm-pack/tree/v2.2.0)
+* [symfony/test-pack](https://github.com/symfony/test-pack/tree/v1.0.9)
+
+#### Task 6 BACKEND (focus): Implement an ORM database access layer so we don’t have SQL in the controller code
+1. Add ORM pack to the project.
+2. Add Todo and User Entity.
+3. Refactor controllers to move the logic from single file to classes.
+4. Creating the service to handle business logic.
