@@ -2,8 +2,10 @@
 
 namespace Controller;
 
+use Service\MessageService;
 use Service\TodoService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Todo Controller Class
@@ -19,17 +21,24 @@ class TodoController extends BaseController
 
 
 	/**
+	 * @var MessageService
+	 */
+	private $messageService;
+
+	/**
 	 * Setup the todo service
 	 *
-	 * @override
+	 * @param $app
+	 * @param $messageService
 	 */
-	public function __construct($app)
+	public function __construct($app, $messageService)
 	{
 		parent::__construct($app);
 		$this->todoService = new TodoService(
 			$this->getEntityManager(),
 			$this->getAuthService()
 		);
+		$this->messageService = $messageService;
 	}
 
 	/**
@@ -37,17 +46,20 @@ class TodoController extends BaseController
 	 *
 	 * @param $id
 	 * @return string
+	 * @throws \Twig\Error\LoaderError
+	 * @throws \Twig\Error\RuntimeError
+	 * @throws \Twig\Error\SyntaxError
 	 */
 	public function index($id = null)
 	{
 		if ($id) {
 			$todo = $this->todoService->getTodoForCurrentUser($id);
 			if ($todo) {
-				return $this->getTwig()
-					->render('todo.html', [
+				return $this->getTwig()->render('todo.html', [
 						'todo' => $todo
 					]);
 			}
+			throw new NotFoundHttpException("Requested todo was not found.");
 		}
 		return $this->getTwig()->render('todos.html', [
 			'todos' => $this->todoService->getTodosForCurrentUser()
@@ -59,13 +71,19 @@ class TodoController extends BaseController
 	 *
 	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 * @throws \Doctrine\ORM\OptimisticLockException
+	 * @throws \Exception
 	 */
 	public function add(Request $request)
 	{
-		$this->todoService
+		$addedTodo = $this->todoService
 			->addTodo($request->get('description'));
-		return $this->redirect('/todo');
+		if ($addedTodo) {
+			$this->messageService->add(
+				'todo.msg',
+				"Todo '{$addedTodo->getdescription()}' was added.");
+			return $this->redirect('/todo');
+		}
+		throw new \Exception("Failed to add todo.");
 	}
 
 	/**
@@ -73,13 +91,19 @@ class TodoController extends BaseController
 	 *
 	 * @param $id
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 * @throws \Doctrine\ORM\OptimisticLockException
+	 * @throws \Exception
 	 */
-	public function delete($id, Request $request)
+	public function delete($id)
 	{
-		$this->todoService
+		$deletedTodo = $this->todoService
 			->delete($id);
-		return $this->redirect('/todo');
+		if ($deletedTodo) {
+			$this->messageService->add(
+				'todo.msg',
+				"Todo '{$deletedTodo->getdescription()}' was removed.");
+			return $this->redirect('/todo');
+		}
+		throw new \Exception("Failed to remove todo.");
 	}
 
 }

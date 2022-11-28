@@ -4,13 +4,19 @@ use Controller\UserController;
 use Controller\HomeController;
 use Controller\TodoController;
 use Service\AuthService;
+use Service\MessageService;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Setup required services and components.
  */
+$app['message.service'] = function () use ($app) {
+	return new MessageService($app, $app['session']->getFlashBag());
+};
+
 $app['twig'] = $app->share($app->extend('twig', function ($twig, $app) {
 	$twig->addGlobal('user', $app['auth.service']->getCurrentUser());
+	$twig->addGlobal('messages', $app['message.service']);
 	return $twig;
 }));
 
@@ -26,11 +32,11 @@ $app['home.controller'] = function () use ($app) {
 };
 
 $app['todos.controller'] = function () use ($app) {
-	return new TodoController($app);
+	return new TodoController($app, $app['message.service']);
 };
 
 $app['user.controller'] = function () use ($app) {
-	return new UserController($app);
+	return new UserController($app, $app['message.service']);
 };
 
 /**
@@ -43,6 +49,11 @@ $app->before(function (Request $request) use ($app) {
 	}
 	return $app->redirect('/login');
 });
+
+/**
+ * Add error handling service.
+ */
+$app->error('message.service:handleError');
 
 /**
  * Setup routes

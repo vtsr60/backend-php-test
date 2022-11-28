@@ -106,3 +106,13 @@ More documentation on Github:
 2. Add Todo and User Entity.
 3. Refactor controllers to move the logic from single file to classes.
 4. Creating the service to handle business logic.
+
+#### Extra task: Added unit test for AuthService
+1. Add PHPUnit config and bootstrap file
+2. Add Unit test for AuthService
+3. Run the PHPUnit using ```.\bin\test.cmd```
+
+#### TASK 4: As a user I can see a confirmation message when I add/delete a todo.
+1. Add MessageService to interact with Flashbag
+2. Add Exception/Error handling to application(404)
+3. Add confirmation messages to the when add/delete a todo

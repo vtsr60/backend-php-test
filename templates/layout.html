@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{% block title '' %} - Todos</title>
 
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet" type="text/css" />
   </head>
@@ -33,6 +34,19 @@
 
     <div class="container">
       <div class="row">
+        {%- if messages.hasMessage('error') %}
+          <div class="col-md-4 col-md-offset-4">
+            {%- for error in messages.get('error') %}
+              <div class="alert alert-danger" >
+                {% if error.title %}
+                  <h5 class="alert-heading">{{ error.title }}</h5>
+                {% endif %}
+                {{ error.message }}
+              </div>
+            {%- endfor %}
+          </div>
+        {%- endif %}
+
         {% block content %}{% endblock %}
       </div>
     </div>

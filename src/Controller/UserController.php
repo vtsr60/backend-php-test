@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Service\MessageService;
 use Service\UserService;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,15 +19,21 @@ class UserController extends BaseController
 	private $userService;
 
 	/**
+	 * @var MessageService
+	 */
+	private $messageService;
+
+	/**
 	 * @param Application $app
 	 */
-	public function __construct($app)
+	public function __construct($app, $messageService)
 	{
 		parent::__construct($app);
 		$this->userService = new UserService(
 			$this->getEntityManager(),
 			$this->getAuthService()
 		);
+		$this->messageService = $messageService;
 	}
 
 	/**
@@ -42,6 +49,9 @@ class UserController extends BaseController
 				$request->get('username'),
 				$request->get('password')
 			)) {
+			$this->messageService->add(
+				'todo.msg',
+				"Welcome {$request->get('username')}.");
 			return $this->redirect('/todo');
 		}
 

@@ -2,6 +2,7 @@
 
 namespace Service;
 
+
 use Entity\Todo;
 
 /**
@@ -23,13 +24,12 @@ class TodoService extends EntityService
 	 * @param $page
 	 * @return array
 	 */
-	public function getTodosForCurrentUser($uri = '/todo', $page = 1)
+	public function getTodosForCurrentUser()
 	{
 		return $this->findBy([
 			'user_id' => $this->getAuthService()
 				->getCurrentUserId()
 		]);
-
 	}
 
 	/**
@@ -52,13 +52,18 @@ class TodoService extends EntityService
 	 *
 	 * @param $description
 	 * @return \Doctrine\ORM\Mapping\Entity|null
+	 * @throws \Exception
 	 */
 	public function addTodo($description)
 	{
-		$newTodo = new Todo();
-		$newTodo->setuser_id($this->getAuthService()->getCurrentUserId())
-			->setdescription($description);
-		return $this->save($newTodo);
+		try {
+			$newTodo = new Todo();
+			$newTodo->setuser_id($this->getAuthService()->getCurrentUserId())
+				->setdescription($description);
+			return $this->save($newTodo);
+		} catch (\Exception $e) {
+		}
+		throw new \Exception('Unexpected error has happened. Failed to add new todo.');
 	}
 
 	/**
@@ -66,12 +71,17 @@ class TodoService extends EntityService
 	 *
 	 * @param $id
 	 * @return object|null
+	 * @throws \Exception
 	 */
 	public function delete($id)
 	{
-		$todo = $this->getTodoForCurrentUser($id);
-		$this->remove($todo);
-		return $todo;
+		try {
+			$todo = $this->getTodoForCurrentUser($id);
+			$this->remove($todo);
+			return $todo;
+		} catch (\Exception $e) {
+		}
+		throw new \Exception('Unexpected error has happened. Failed to delete todo.');
 	}
 
 }
