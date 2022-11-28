@@ -22,8 +22,6 @@ class TodoService extends EntityService
 	/**
 	 * Get list of todos for current logged in user.
 	 *
-	 * @param $uri
-	 * @param $page
 	 * @return array
 	 */
 	public function getTodosForCurrentUser()
@@ -66,7 +64,8 @@ class TodoService extends EntityService
 		try {
 			$newTodo = new Todo();
 			$newTodo->setuser_id($this->getAuthService()->getCurrentUserId())
-				->setdescription($description);
+				->setdescription($description)
+				->setcompleted(false);
 			return $this->save($newTodo);
 		} catch (\Exception $e) {
 		}
@@ -89,6 +88,19 @@ class TodoService extends EntityService
 		} catch (\Exception $e) {
 		}
 		throw new \Exception('Unexpected error has happened. Failed to delete todo.');
+	}
+
+	public function completed($id)
+	{
+		try {
+			$todo = $this->getTodoForCurrentUser($id);
+			$todo->setcompleted(true);
+			$todo->setcompleted_on(new \DateTime("now"));
+			return $this->save($todo);
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
+		throw new \Exception('Unexpected error has happened. Failed to mark completed todo.');
 	}
 
 }

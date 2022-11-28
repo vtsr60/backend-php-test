@@ -123,3 +123,8 @@ More documentation on Github:
 #### TASK 3: As a user I can view a todo in a JSON format.
 1. Add ResponseService to handle the response depending on the format
 2. Add Unit test to the ResponseService
+
+#### TASK 2: As a user I can mark a todo as completed.
+1. Add completed and completed_on to the todo entity.
+2. Add ```task2_migration.sql``` migration file for this task.
+2. Add function to mark todo as completed

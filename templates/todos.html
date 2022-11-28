@@ -12,7 +12,13 @@
     {%- endif %}
 
     <table class="table table-striped">
-        <th>#</th><th>User</th><th>Description</th><th></th>
+        <tr>
+            <th>#</th>
+            <th>User</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
         {% for todo in todos %}
             <tr>
                 <td>{{ todo.id }}</td>
@@ -21,6 +27,17 @@
                     <a href="{{ app.request.baseurl }}/todo/{{ todo.id }}">
                        {{ todo.description }}
                     </a>
+                </td>
+                <td>
+                    {%- if todo.completed %}
+                    <span>Completed on <br />{{ todo.completed_on }}.</span>
+                    {%- else %}
+                    <form method="post" action="{{ app.request.baseurl }}/todo/completed/{{ todo.id }}">
+                        <button type="submit" class="btn btn-xs btn-success">
+                            <span class="glyphicon glyphicon-ok glyphicon-white"></span> Mark Completed
+                        </button>
+                    </form>
+                    {%- endif %}
                 </td>
                 <td>
                     <form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ todo.id }}">

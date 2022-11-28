@@ -55,7 +55,8 @@ class TodoController extends BaseController
 	public function index($id = null, $format = ResponseService::OUTPUT_HTML, Request $request)
 	{
 		if ($id) {
-			$todo = $this->todoService->getTodoForCurrentUser($id);
+			$todo = $this->todoService
+				->getTodoForCurrentUser($id);
 			if ($todo) {
 				return $this->sendOutput($todo, 'todo.html', $format);
 			}
@@ -90,7 +91,6 @@ class TodoController extends BaseController
 	 * Handle todo.del route.
 	 *
 	 * @param $id
-	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 * @throws \Exception
 	 */
@@ -107,4 +107,20 @@ class TodoController extends BaseController
 		throw new \Exception("Failed to remove todo.");
 	}
 
+	public function completed($id, Request $request)
+	{
+		$todo = $this->todoService
+			->completed($id);
+		if ($todo) {
+			$this->messageService->add(
+				'todo.msg',
+				"Todo '{$todo->getdescription()}' was marked completed.");
+			$redirectPath = '/todo';
+			if ($referer = $request->headers->get('referer')) {
+				$redirectPath = $referer;
+			}
+			return $this->redirect($redirectPath);
+		}
+		throw new \Exception("Failed to mark todo as completed.");
+	}
 }

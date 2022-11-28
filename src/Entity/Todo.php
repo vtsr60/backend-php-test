@@ -4,6 +4,7 @@ namespace Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Helper\Constants;
 use JsonSerializable;
 
 /**
@@ -32,6 +33,17 @@ class Todo implements JsonSerializable
 	 */
 	private $description;
 
+	/**
+	 * @ORM\Column(type=Types::BOOLEAN, nullable=false)
+	 */
+	private $completed;
+
+	/**
+	 * @ORM\Column(type=Types::DATETIME_MUTABLE)
+	 * @var \DateTime
+	 */
+	private $completed_on;
+
 	public function getid()
 	{
 		return $this->id;
@@ -59,12 +71,38 @@ class Todo implements JsonSerializable
 		return $this;
 	}
 
+	public function getcompleted()
+	{
+		return $this->completed;
+	}
+
+	public function setcompleted($completed)
+	{
+		$this->completed = $completed;
+		return $this;
+	}
+
+	public function getcompleted_on()
+	{
+		return $this->completed_on
+			? $this->completed_on->format(Constants::DATE_FORMAT)
+			: null;
+	}
+
+	public function setcompleted_on($completed_on)
+	{
+		$this->completed_on = $completed_on;
+		return $this;
+	}
+
 	public function jsonSerialize()
 	{
 		return [
 			'id' => $this->getid(),
 			'user_id' => $this->getuser_id(),
 			'description' => $this->getdescription(),
+			'completed' => $this->getcompleted(),
+			'completed_on' => $this->getcompleted_on(),
 		];
 	}
 }

@@ -85,3 +85,5 @@ $app->post('/todo/add', 'todos.controller:add')
 	->bind('todo.add');
 $app->post('/todo/delete/{id}', 'todos.controller:delete')
 	->bind('todo.delete');
+$app->post('/todo/completed/{id}', 'todos.controller:completed')
+	->bind('todo.completed');
