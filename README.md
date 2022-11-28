@@ -116,3 +116,10 @@ More documentation on Github:
 1. Add MessageService to interact with Flashbag
 2. Add Exception/Error handling to application(404)
 3. Add confirmation messages to the when add/delete a todo
+
+#### Extra task: Added validation to user login form
+1. Add validation for the login form
+
+#### TASK 3: As a user I can view a todo in a JSON format.
+1. Add ResponseService to handle the response depending on the format
+2. Add Unit test to the ResponseService

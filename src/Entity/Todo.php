@@ -4,6 +4,7 @@ namespace Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * Todo entity class
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="todos")
  * @ORM\Entity
  */
-class Todo
+class Todo implements JsonSerializable
 {
 
 	/**
@@ -58,4 +59,12 @@ class Todo
 		return $this;
 	}
 
+	public function jsonSerialize()
+	{
+		return [
+			'id' => $this->getid(),
+			'user_id' => $this->getuser_id(),
+			'description' => $this->getdescription(),
+		];
+	}
 }

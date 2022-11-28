@@ -4,6 +4,7 @@ namespace Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JsonSerializable;
 
 /**
  * User entity class
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="users")
  * @ORM\Entity
  */
-class User
+class User implements JsonSerializable
 {
 
 	/**
@@ -58,4 +59,11 @@ class User
 		return $this;
 	}
 
+	public function jsonSerialize()
+	{
+		return [
+			'id' => $this->getid(),
+			'username' => $this->getusername()
+		];
+	}
 }

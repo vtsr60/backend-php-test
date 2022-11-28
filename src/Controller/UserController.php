@@ -26,9 +26,9 @@ class UserController extends BaseController
 	/**
 	 * @param Application $app
 	 */
-	public function __construct($app, $messageService)
+	public function __construct($app, $responseService, $messageService)
 	{
-		parent::__construct($app);
+		parent::__construct($app, $responseService);
 		$this->userService = new UserService(
 			$this->getEntityManager(),
 			$this->getAuthService(),
@@ -42,6 +42,7 @@ class UserController extends BaseController
 	 *
 	 * @param Request $request
 	 * @return string|\Symfony\Component\HttpFoundation\RedirectResponse
+	 * @throws \Exception\ValidationException
 	 */
 	public function login(Request $request)
 	{
@@ -56,7 +57,7 @@ class UserController extends BaseController
 			return $this->redirect('/todo');
 		}
 
-		return $this->getTwig()->render('login.html', []);
+		return $this->sendOutput([], 'login.html');
 	}
 
 	/**

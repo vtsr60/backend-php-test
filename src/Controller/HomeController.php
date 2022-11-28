@@ -11,12 +11,12 @@ class HomeController extends BaseController
 	/**
 	 * Handle home route - loads readme file
 	 *
-	 * @return string
+	 * @return string|\Symfony\Component\HttpFoundation\JsonResponse
 	 */
 	public function index()
 	{
-		return $this->getTwig()->render('index.html', [
+		return $this->sendOutput([
 			'readme' => file_get_contents('README.md'),
-		]);
+		], 'index.html');
 	}
 }

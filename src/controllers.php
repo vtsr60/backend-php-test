@@ -5,6 +5,7 @@ use Controller\HomeController;
 use Controller\TodoController;
 use Service\AuthService;
 use Service\MessageService;
+use Service\ResponseService;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -24,19 +25,23 @@ $app['auth.service'] = function () use ($app) {
 	return new AuthService($app['session']);
 };
 
+$app['response.service'] = function () use ($app) {
+	return new ResponseService($app['twig']);
+};
+
 /**
  * Setup controllers.
  */
 $app['home.controller'] = function () use ($app) {
-	return new HomeController($app);
+	return new HomeController($app, $app['response.service']);
 };
 
 $app['todos.controller'] = function () use ($app) {
-	return new TodoController($app, $app['message.service']);
+	return new TodoController($app, $app['response.service'], $app['message.service']);
 };
 
 $app['user.controller'] = function () use ($app) {
-	return new UserController($app, $app['message.service']);
+	return new UserController($app, $app['response.service'], $app['message.service']);
 };
 
 /**
@@ -66,10 +71,16 @@ $app->match('/login', 'user.controller:login')
 $app->get('/logout', 'user.controller:logout')
 	->bind('logout');
 
-$app->get('/todo/{id}', 'todos.controller:index')
+$app->get('/todo/{id}/{format}', 'todos.controller:index')
 	->value('id', null)
 	->assert('id', '\d+')
+	->value('format', null)
+	->assert('format', 'json')
 	->bind('todo');
+$app->get('/todo/json', 'todos.controller:index')
+	->value('id', null)
+	->value('format', 'json')
+	->bind('todo.json');
 $app->post('/todo/add', 'todos.controller:add')
 	->bind('todo.add');
 $app->post('/todo/delete/{id}', 'todos.controller:delete')

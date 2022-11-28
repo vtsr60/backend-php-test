@@ -4,6 +4,7 @@ namespace Controller;
 
 use Doctrine\ORM\EntityManager;
 use Service\AuthService;
+use Service\ResponseService;
 use Silex\Application;
 use Twig\Environment;
 
@@ -19,11 +20,28 @@ class BaseController
 	private $app;
 
 	/**
+	 * @var ResponseService
+	 */
+	private $responseService;
+
+	/**
 	 * @param Application $app
 	 */
-	public function __construct($app)
+	public function __construct($app, $responseService)
 	{
 		$this->app = $app;
+		$this->responseService = $responseService;
+	}
+
+	/**
+	 * Send response for the request
+	 *
+	 * @param ...$params
+	 * @return string|\Symfony\Component\HttpFoundation\JsonResponse
+	 */
+	public function sendOutput(...$params)
+	{
+		return $this->responseService->output(...$params);
 	}
 
 	/**

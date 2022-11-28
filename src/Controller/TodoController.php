@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Service\MessageService;
+use Service\ResponseService;
 use Service\TodoService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -29,11 +30,12 @@ class TodoController extends BaseController
 	 * Setup the todo service
 	 *
 	 * @param $app
+	 * @param $responseService
 	 * @param $messageService
 	 */
-	public function __construct($app, $messageService)
+	public function __construct($app, $responseService, $messageService)
 	{
-		parent::__construct($app);
+		parent::__construct($app, $responseService);
 		$this->todoService = new TodoService(
 			$this->getEntityManager(),
 			$this->getAuthService(),
@@ -46,25 +48,22 @@ class TodoController extends BaseController
 	 * Handle todo route.
 	 *
 	 * @param $id
-	 * @return string
-	 * @throws \Twig\Error\LoaderError
-	 * @throws \Twig\Error\RuntimeError
-	 * @throws \Twig\Error\SyntaxError
+	 * @param $format
+	 * @param Request $request
+	 * @return string|\Symfony\Component\HttpFoundation\JsonResponse
 	 */
-	public function index($id = null)
+	public function index($id = null, $format = ResponseService::OUTPUT_HTML, Request $request)
 	{
 		if ($id) {
 			$todo = $this->todoService->getTodoForCurrentUser($id);
 			if ($todo) {
-				return $this->getTwig()->render('todo.html', [
-					'todo' => $todo
-				]);
+				return $this->sendOutput($todo, 'todo.html', $format);
 			}
 			throw new NotFoundHttpException("Requested todo was not found.");
 		}
-		return $this->getTwig()->render('todos.html', [
+		return $this->sendOutput([
 			'todos' => $this->todoService->getTodosForCurrentUser()
-		]);
+		], 'todos.html', $format);
 	}
 
 	/**
@@ -91,6 +90,7 @@ class TodoController extends BaseController
 	 * Handle todo.del route.
 	 *
 	 * @param $id
+	 * @param Request $request
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
 	 * @throws \Exception
 	 */
