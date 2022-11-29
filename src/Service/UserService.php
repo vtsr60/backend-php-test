@@ -5,6 +5,7 @@ namespace Service;
 
 use Entity\User;
 use Exception\ValidationException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * User Service Class
@@ -31,14 +32,7 @@ class UserService extends EntityService
 	{
 		if ($username && !empty($username)
 			&& $password && !empty($password)) {
-			$user = $this->findOneBy([
-				'username' => $username
-			]);
-
-			if ($user
-				&& $this->getAuthService()->validatePassword($user, $password)) {
-				$this->getAuthService()
-					->setCurrentUser($user);
+			if ($this->authentication($username, $password)) {
 				return true;
 			}
 			throw new ValidationException(
@@ -62,5 +56,47 @@ class UserService extends EntityService
 		$this->getAuthService()
 			->clearCurrentUser();
 		return true;
+	}
+
+	/**
+	 * Login using the basic auth request(For JSON API)
+	 *
+	 * @param Request $request
+	 * @return bool
+	 */
+	public function apiBasicAuthLogin(Request $request)
+	{
+		$basicAuthCode = $request->headers->get('Authorization', false);
+		if ($basicAuthCode &&  preg_match('/^Basic /i', $basicAuthCode)) {
+			$basicAuthCode = str_ireplace("Basic ","", $basicAuthCode);
+			list($username, $password) = explode(':', base64_decode($basicAuthCode));
+			if ($username && !empty($username)
+				&& $password && !empty($password)) {
+				return $this->authentication($username, $password);
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Authenticated user if valid username and password given.
+	 *
+	 * @param $username
+	 * @param $password
+	 * @return bool
+	 */
+	protected function authentication($username, $password)
+	{
+		$user = $this->findOneBy([
+			'username' => $username
+		]);
+
+		if ($user && $this->getAuthService()->validatePassword($user, $password)) {
+			$this->getAuthService()
+				->setCurrentUser($user);
+			return true;
+		}
+
+		return false;
 	}
 }

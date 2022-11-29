@@ -33,11 +33,12 @@ class ResponseService
 	 * Set CSRF token.
 	 *
 	 * @param $token
-	 * @return void
+	 * @return $this
 	 */
 	public function setCSRFToken($token)
 	{
 		$this->crsfToken = $token;
+		return $this;
 	}
 
 	/**

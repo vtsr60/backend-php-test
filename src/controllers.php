@@ -7,6 +7,7 @@ use Service\AuthService;
 use Service\CSRFTokenService;
 use Service\MessageService;
 use Service\ResponseService;
+use Service\UserService;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -34,6 +35,10 @@ $app['response.service'] = function () use ($app) {
 	return new ResponseService($app['twig']);
 };
 
+$app['user.service'] = function () use ($app) {
+	return new UserService($app['orm.em'], $app['auth.service'], null);
+};
+
 /**
  * Setup controllers.
  */
@@ -53,6 +58,8 @@ $app['user.controller'] = function () use ($app) {
  * Add authentication middleware.
  */
 $app->before(function (Request $request) use ($app) {
+	// Handle Basic Auth for API request
+	$app['user.service']->apiBasicAuthLogin($request);
 	if ($app['auth.service']->routeValidation($request)) {
 		// Allowed access
 		return;
