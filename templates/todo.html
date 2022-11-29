@@ -11,18 +11,22 @@
 			<th class="width-min">#</th>
 			<th class="width-min"></th>
 			<th class="width-auto">Description</th>
-			<th class="width-small">Status</th>
+			<th class="width-small hidden-xs">Status</th>
 			<th class="width-min"></th>
 		</tr>
 		<tr>
 			<td>{{ id }}</td>
 			<td>
-				{% include 'markcompleted.html' with {'CSRFToken': CSRFToken, 'id': id, 'completed': completed}%}
-			</td>
+				{% include 'markcompleted.html' with {
+					'CSRFToken': CSRFToken,
+					'id': id,
+					'completed': completed,
+					'completed_on': completed_on
+				}%}			</td>
 			<td>{{ description }}</td>
-			<td>
+			<td class="hidden-xs">
 				{%- if completed %}
-				<span>Completed on <br /><strong>{{ completed_on }}</strong>.</span>
+				<span>Completed on <br /><strong>{{ completed_on }}</strong></span>
 				{%- else %}
 				<span>In progress</span>
 				{%- endif %}

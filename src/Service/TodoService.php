@@ -61,10 +61,22 @@ class TodoService extends EntityService
 	 */
 	public function addTodo($description)
 	{
-		$error = $this->validate($description, new Assert\NotBlank());
+		$description = trim($description);
+
+		$error = $this->validate($description, [
+			new Assert\NotBlank([
+				'message' => 'Description should not be blank.',
+			]),
+			new Assert\Length([
+				'max' => 255,
+				'minMessage' => 'Description should not be blank.',
+				'maxMessage' => 'Description cannot be longer than 255 characters',
+			])
+		]);
 		if ($error) {
 			throw new ValidationException($error, 'add.todo');
 		}
+
 		try {
 			$newTodo = new Todo();
 			$newTodo->setuser_id($this->getAuthService()->getCurrentUserId())
@@ -73,6 +85,7 @@ class TodoService extends EntityService
 			return $this->save($newTodo);
 		} catch (\Exception $e) {
 		}
+
 		throw new \Exception('Unexpected error has happened. Failed to add new todo.');
 	}
 
@@ -94,6 +107,13 @@ class TodoService extends EntityService
 		throw new \Exception('Unexpected error has happened. Failed to delete todo.');
 	}
 
+	/**
+	 * Make the given todo completed.
+	 *
+	 * @param $id
+	 * @return \Doctrine\ORM\Mapping\Entity|void|null
+	 * @throws \Exception
+	 */
 	public function completed($id)
 	{
 		try {
@@ -102,7 +122,6 @@ class TodoService extends EntityService
 			$todo->setcompleted_on(new \DateTime("now"));
 			return $this->save($todo);
 		} catch (\Exception $e) {
-			die($e->getMessage());
 		}
 		throw new \Exception('Unexpected error has happened. Failed to mark completed todo.');
 	}

@@ -29,7 +29,7 @@ class Todo implements JsonSerializable
 	private $user_id;
 
 	/**
-	 * @ORM\Column(length=255)
+	 * @ORM\Column(length=255, nullable=false)
 	 */
 	private $description;
 

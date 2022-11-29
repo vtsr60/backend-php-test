@@ -7,7 +7,6 @@ use Service\AuthService;
 use Service\CSRFTokenService;
 use Service\ResponseService;
 use Silex\Application;
-use Twig\Environment;
 
 /**
  * Base Controller Classes
@@ -87,16 +86,6 @@ class BaseController
 	protected function getApp()
 	{
 		return $this->app;
-	}
-
-	/**
-	 * Get the twig engine.
-	 *
-	 * @return Environment
-	 */
-	protected function getTwig()
-	{
-		return $this->app['twig'];
 	}
 
 	/**

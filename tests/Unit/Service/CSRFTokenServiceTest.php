@@ -66,7 +66,7 @@ class CSRFTokenServiceTest extends TestCase
 
 	}
 
-	public function testValidateTokenFalseWithValidToken()
+	public function testValidateTokenTrueWithValidToken()
 	{
 		$this->service = $this->getMockBuilder(CSRFTokenService::class)
 			->disableOriginalConstructor()

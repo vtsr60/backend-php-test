@@ -115,10 +115,10 @@ class TodoController extends BaseController
 		if ($deletedTodo) {
 			$this->messageService->add(
 				'todo.msg',
-				"Todo '{$deletedTodo->getdescription()}' was removed.");
+				"Todo '{$deletedTodo->getdescription()}' was deleted.");
 			return $this->redirect('/todo');
 		}
-		throw new \Exception("Failed to remove todo.");
+		throw new \Exception("Failed to delete todo.");
 	}
 
 	/**
@@ -147,6 +147,7 @@ class TodoController extends BaseController
 			}
 			return $this->redirect($redirectPath);
 		}
+
 		throw new \Exception("Failed to mark todo as completed.");
 	}
 }

@@ -32,7 +32,7 @@ $app->register(new DoctrineServiceProvider, array(
 ));
 
 /**
- * Add Entity support with annotation.
+ * Add ORM Entity support with annotation.
  */
 $app->register(new DoctrineOrmServiceProvider, array(
 	'orm.proxies_dir' => __DIR__ . '/../tmp/cache/Entity/Proxy',

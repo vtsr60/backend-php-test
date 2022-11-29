@@ -144,3 +144,20 @@ More documentation on Github:
    1. hash.user.password - Hash the current password of the existing users
    2. create.user - Create user with hash password
 3. Update the required unit tests
+
+#### Extra task: Added header basic authentication for JSON API
+1. Add header basic authentication for calling JSON API(http://localhost:1337/todo/1/json)
+   1. Request should have ```Authorization``` header with value ```Basic dXNlcjE6dXNlcjE=``(user1:user1)
+
+#### Extra task: Minor improvement to the UI
+1. Make the navigation work responsive
+2. Increase the size of the todo table list
+3. Add help text to delete & completed button
+4. Other minor style changes
+
+#### Extra task: Minor improvement to the UI and final checks
+1. Make the todo table to be more responsive
+2. Add more validation to the description field
+3. Add confirmation on delete
+4. Other minor style changes
+

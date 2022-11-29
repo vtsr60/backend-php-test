@@ -75,14 +75,17 @@ $app->error('message.service:handleError');
 /**
  * Setup routes
  */
+// Home route
 $app->get('/', 'home.controller:index')
 	->bind('home');
 
+// Authentication routes
 $app->match('/login', 'user.controller:login')
 	->bind('login');
 $app->get('/logout', 'user.controller:logout')
 	->bind('logout');
 
+// Todo routes
 $app->get('/todo/{id}/{format}', 'todos.controller:index')
 	->value('id', null)
 	->assert('id', '\d+')
