@@ -1,57 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title '' %} - Todos</title>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% block title '' %} - Todos</title>
 
-    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
+	<link rel="icon" type="image/x-icon" href="{{ app.request.basepath }}/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home glyphicon-white"></span></a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="/todo">Todo list</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            {% if user %}
-              <li><a href="/logout"><span class="glyphicon glyphicon-user"></span> {{ user.username }} Logout</a></li>
-            {% else %}
-              <li><a href="/login">Login</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">
+				<span class="glyphicon glyphicon-home glyphicon-white"></span>
+			</a>
+			<a class="navbar-brand navbar-toggler pull-right visible-xs" type="button" data-toggle="collapse"
+			   data-target="#navbar" aria-controls="navbarSupportedContent" aria-expanded="false"
+			   aria-label="Toggle navigation">
+				<span class="glyphicon glyphicon-menu-hamburger glyphicon-white"></span>
+			</a>
+		</div>
+		<div id="navbar" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="/todo">
+						<span class="glyphicon glyphicon-th-list glyphicon-white"></span> Todo list
+					</a>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				{% if user %}
+				<li>
+					<a href="/logout">
+						<span class="glyphicon glyphicon-user"></span>
+						{{ user.username }} Logout
+					</a>
+				</li>
+				{% else %}
+				<li>
+					<a href="/login">
+						<span class="glyphicon glyphicon-log-in glyphicon-white"></span> Login
+					</a>
+				</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
+</nav>
 
-    <div class="container">
-      <div class="row">
-        {%- if messages.hasMessage('error') %}
-          <div class="col-md-4 col-md-offset-4">
-            {%- for error in messages.get('error') %}
-              <div class="alert alert-danger" >
-                {% if error.title %}
-                  <h5 class="alert-heading">{{ error.title }}</h5>
-                {% endif %}
-                {{ error.message }}
-              </div>
-            {%- endfor %}
-          </div>
-        {%- endif %}
+<div class="container">
+	<div class="row">
+		{%- if messages.hasMessage('error') %}
+		<div class="col-md-8 col-md-offset-2">
+			{%- for error in messages.get('error') %}
+			<div class="alert alert-danger alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span class="glyphicon glyphicon-remove"></span>
+				</button>
+				{% if error.title %}
+					<h5 class="alert-heading">{{ error.title }}</h5>
+				{% endif %}
+				{{ error.message }}
+			</div>
+			{%- endfor %}
+		</div>
+		{%- endif %}
 
-        {% block content %}{% endblock %}
-      </div>
-    </div>
+		{% block content %}{% endblock %}
+	</div>
+</div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  </body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="{{ app.request.basepath }}/js/main.js"></script>
+</body>
 </html>

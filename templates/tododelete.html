@@ -1,0 +1,7 @@
+<form method="post" action="{{ app.request.baseurl }}/todo/delete/{{ id }}">
+	<input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
+	<button type="submit" class="btn btn-xs btn-danger"
+			data-toggle="tooltip" data-placement="top" title="Delete the todo.">
+		<span class="glyphicon glyphicon-trash glyphicon-white"></span>
+	</button>
+</form>

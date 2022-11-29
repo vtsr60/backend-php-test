@@ -1,0 +1,9 @@
+<form method="post" action="{{ app.request.baseurl }}/todo/completed/{{ id }}">
+	<input type="hidden" name="CSRFToken" value="{{ CSRFToken }}">
+	<button type="submit" class="btn btn-xs {{ completed ? '' : 'btn-success' }}"
+			data-toggle="tooltip" data-placement="top"
+			{{ completed ?
+	'title="Already Completed" disabled="disabled"' : 'title="Completed the todo."' }}>
+	<span class="glyphicon glyphicon-ok glyphicon-white"></span>
+	</button>
+</form>
